@@ -51,15 +51,13 @@ export const getStock = async (
     }
 
     await dbConnection.insertLog(cleanSymbol, currentPrice);
-    res.json({ cleanSymbol, currentPrice });
+    return res.json({ cleanSymbol, currentPrice });
   } catch (error: any) {
-    res.status(500).json({
+    return res.status(error.code).json({
       message: "Error fetching stock price",
-      error: (error as any).message,
+      error: error.message,
     });
   }
-
-  return res;
 };
 
 export const getLogs = async (
@@ -77,12 +75,11 @@ export const getLogs = async (
 
   try {
     const logs = await dbConnection.getLogs(parsedLimit);
-    res.json(logs);
-  } catch (error) {
-    res.status((error as any).code).json({
+    return res.json(logs);
+  } catch (error: any) {
+    return res.status(error.code).json({
       message: "Error fetching logs",
-      error: (error as any).message,
+      error: error.message,
     });
   }
-  return res;
 };

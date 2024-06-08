@@ -13,7 +13,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/logs?limit=1",
+					"raw": "http://localhost:3000/api/logs?limit=10",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -26,7 +26,7 @@
 					"query": [
 						{
 							"key": "limit",
-							"value": "1"
+							"value": "10"
 						}
 					]
 				}
@@ -39,7 +39,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/stock?symbol=A-GR&provider=polygon",
+					"raw": "http://localhost:3000/api/stock?symbol=goog&provider=alphavantage",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -52,11 +52,11 @@
 					"query": [
 						{
 							"key": "symbol",
-							"value": "A-GR"
+							"value": "goog"
 						},
 						{
 							"key": "provider",
-							"value": "polygon"
+							"value": "alphavantage"
 						}
 					]
 				}
