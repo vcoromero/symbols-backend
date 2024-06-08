@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+*.o
+*.out
+*.exe
+.vscode/
+
+/node_modules/
+/build/
+/dist/
