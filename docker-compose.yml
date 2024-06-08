@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: blend_long_challenge
+      MYSQL_USER: basic_user
+      MYSQL_PASSWORD: basic_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./src/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my-db-network
+
+volumes:
+  db_data:
+
+networks:
+  my-db-network:

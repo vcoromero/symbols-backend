@@ -1,0 +1,67 @@
+{
+	"info": {
+		"_postman_id": "ba444721-255d-4ef0-a701-0770f410e889",
+		"name": "symbols-backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4425042",
+		"_collection_link": "https://crimson-satellite-5056.postman.co/workspace/falabella~be479c83-592e-4349-a7d1-8904137ba28d/collection/4425042-ba444721-255d-4ef0-a701-0770f410e889?action=share&source=collection_link&creator=4425042"
+	},
+	"item": [
+		{
+			"name": "logs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/logs?limit=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "stock",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/stock?symbol=A-GR&provider=polygon",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"stock"
+					],
+					"query": [
+						{
+							"key": "symbol",
+							"value": "A-GR"
+						},
+						{
+							"key": "provider",
+							"value": "polygon"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
