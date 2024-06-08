@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This project provides a backend service for fetching stock prices from different providers and logging them in a MySQL database. The service is built using Node.js, Express, and MySQL, and utilizes Docker for easy setup and deployment.
+This project provides a backend service for fetching stock prices from different providers and logging them in a MySQL database. I improved the service by giving it a better structure in general, I also added the names of the providers to use on the switch, I even used interfaces to manipulate the responses of the providers and also as an extra detail I used Docker for easy configuration and deployment of the database.
+
+I included the postman file to quickly make requests once the service is up.
 
 ## Prerequisites
 
