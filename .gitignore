@@ -4,7 +4,6 @@ Thumbs.db
 *.out
 *.exe
 .vscode/
-
-/node_modules/
-/build/
-/dist/
+node_modules/
+build/
+dist/
