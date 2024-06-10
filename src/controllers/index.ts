@@ -1,22 +1,25 @@
 import { Request, Response } from "express";
-import httpService from "../services/httpService";
-import { cleanString } from "../utils/cleanString";
+import dbConnection from "../db/db";
 import {
   AlphaVantageResponse,
   PolygonResponse,
 } from "../interfaces/providersResponse";
+import { generateToken } from "../jwt/jwt";
 import ProvidersName from "../providers/providersName";
-import dbConnection from "../db/db";
+import httpService from "../services/httpService";
+import { cleanString } from "../utils/cleanString";
+import { comparePassword } from "../utils/manage-passwords";
 
 export const getStock = async (
   req: Request,
   res: Response
 ): Promise<Response<any, Record<string, any>>> => {
-  /**
-   * I require the token in the headers to get the stock price
-   * and I need to get the user_id from the token to send it to the getStock db function
-   */
   const { symbol, provider } = req.query;
+  const userId = req.user?.userId;
+
+  if (userId === undefined) {
+    return res.status(400).json({ message: "User ID is missing from request" });
+  }
 
   if (!symbol || typeof symbol !== "string") {
     return res.status(400).json({
@@ -54,7 +57,7 @@ export const getStock = async (
         });
     }
 
-    await dbConnection.insertLog(cleanSymbol, currentPrice);
+    await dbConnection.insertLog(cleanSymbol, currentPrice, userId);
     return res.json({ cleanSymbol, currentPrice });
   } catch (error: any) {
     return res.status(error.code).json({
@@ -68,11 +71,12 @@ export const getLogs = async (
   req: Request,
   res: Response
 ): Promise<Response<any, Record<string, any>>> => {
-  /**
-   * I need to ask for a token in the headers to get the logs
-   * and I need to get the user_id from the token to pass it to the getLogs db function
-   */
   const { limit } = req.query;
+  const userId = req.user?.userId;
+
+  if (userId === undefined) {
+    return res.status(400).json({ message: "User ID is missing from request" });
+  }
 
   const parsedLimit = parseInt(limit as string, 10);
   if (isNaN(parsedLimit)) {
@@ -82,7 +86,7 @@ export const getLogs = async (
   }
 
   try {
-    const logs = await dbConnection.getLogs(parsedLimit);
+    const logs = await dbConnection.getLogs(parsedLimit, userId);
     return res.json(logs);
   } catch (error: any) {
     return res.status(error.code).json({
@@ -93,13 +97,39 @@ export const getLogs = async (
 };
 
 export const login = async (req: Request, res: Response) => {
-  /**
-   * in this function I will implement the logic to login a user
-   * and return his token to user to user it in getLogs and getStock functions
-   */
+  const { email, password } = req.body;
+
+  try {
+    const [user] = await dbConnection.getUserByEmail(email);
+
+    if (user.length === 0) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isPasswordValid = await comparePassword(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const token = generateToken(user.id);
+    res.json({ token });
+  } catch (error: any) {
+    res
+      .status(error.code)
+      .json({ message: "Error logging in", error: error.message });
+  }
 };
+
 export const createUser = async (req: Request, res: Response) => {
-  /**
-   * in this function I will implement the logic to create a user
-   */
+  const { name, email, password } = req.body;
+
+  try {
+    await dbConnection.createUser(name, email, password);
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error: any) {
+    res
+      .status(error.code)
+      .json({ message: "Error registering user", error: error.message });
+  }
 };

@@ -22,9 +22,5 @@ CREATE TABLE IF NOT EXISTS logs (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO users (name, email, password) VALUES ('Monkey D Luffy', 'thounsandsunny@ship.com', '123456');
-INSERT INTO users (name, email, password) VALUES ('Trafalgar D Water Law', 'polartank@submarine.com', '123456');
-INSERT INTO users (name, email, password) VALUES ('Eustass Kid', 'victorapunk@ship.com','123456');
-
 GRANT ALL PRIVILEGES ON blend_long_challenge.* TO 'basic_user'@'%';
 FLUSH PRIVILEGES;
