@@ -12,6 +12,10 @@ export const getStock = async (
   req: Request,
   res: Response
 ): Promise<Response<any, Record<string, any>>> => {
+  /**
+   * I require the token in the headers to get the stock price
+   * and I need to get the user_id from the token to send it to the getStock db function
+   */
   const { symbol, provider } = req.query;
 
   if (!symbol || typeof symbol !== "string") {
@@ -64,6 +68,10 @@ export const getLogs = async (
   req: Request,
   res: Response
 ): Promise<Response<any, Record<string, any>>> => {
+  /**
+   * I need to ask for a token in the headers to get the logs
+   * and I need to get the user_id from the token to pass it to the getLogs db function
+   */
   const { limit } = req.query;
 
   const parsedLimit = parseInt(limit as string, 10);
@@ -82,4 +90,16 @@ export const getLogs = async (
       error: error.message,
     });
   }
+};
+
+export const login = async (req: Request, res: Response) => {
+  /**
+   * in this function I will implement the logic to login a user
+   * and return his token to user to user it in getLogs and getStock functions
+   */
+};
+export const createUser = async (req: Request, res: Response) => {
+  /**
+   * in this function I will implement the logic to create a user
+   */
 };
