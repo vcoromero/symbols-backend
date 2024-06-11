@@ -1,24 +1,97 @@
 {
 	"info": {
-		"_postman_id": "ba444721-255d-4ef0-a701-0770f410e889",
+		"_postman_id": "03268e1f-2502-4de7-828c-a2782569caf2",
 		"name": "symbols-backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "4425042",
-		"_collection_link": "https://crimson-satellite-5056.postman.co/workspace/falabella~be479c83-592e-4349-a7d1-8904137ba28d/collection/4425042-ba444721-255d-4ef0-a701-0770f410e889?action=share&source=collection_link&creator=4425042"
+		"_collection_link": "https://crimson-satellite-5056.postman.co/workspace/falabella~be479c83-592e-4349-a7d1-8904137ba28d/collection/4425042-03268e1f-2502-4de7-828c-a2782569caf2?action=share&source=collection_link&creator=4425042"
 	},
 	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"console.log(jsonData)",
+							"pm.environment.set(\"token\", jsonData.token);",
+							"console.log(pm.environment.get(\"token\"))"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"thounsandsunny@ship.com\",\n    \"password\":\"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-base}}/api/login",
+					"host": [
+						"{{url-base}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Monkey D Luffy\",\n    \"email\": \"thounsandsunny@ship.com\",\n    \"password\":\"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url-base}}/api/create-user",
+					"host": [
+						"{{url-base}}"
+					],
+					"path": [
+						"api",
+						"create-user"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "logs",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"uuid": "a8e08d39-da95-4670-badd-8b6c89d0761b"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:3000/api/logs?limit=10",
-					"protocol": "http",
+					"raw": "{{url-base}}/api/logs?limit=10",
 					"host": [
-						"localhost"
+						"{{url-base}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"logs"
@@ -37,14 +110,19 @@
 			"name": "stock",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text",
+						"uuid": "55fc67d0-693b-4942-9a2f-0b1368bbd051"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:3000/api/stock?symbol=goog&provider=alphavantage",
-					"protocol": "http",
+					"raw": "{{url-base}}/api/stock?symbol=appl&provider=alphavantage",
 					"host": [
-						"localhost"
+						"{{url-base}}"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"stock"
@@ -52,7 +130,7 @@
 					"query": [
 						{
 							"key": "symbol",
-							"value": "goog"
+							"value": "appl"
 						},
 						{
 							"key": "provider",

@@ -35,7 +35,8 @@ export const getStock = async (
 
   let currentPrice = 0;
   let response;
-  const cleanSymbol = cleanString(symbol);
+  const cleanSymbol = cleanString(symbol.toUpperCase());
+
   try {
     switch (provider) {
       case ProvidersName.ALPHAVANTAGE:
@@ -43,12 +44,22 @@ export const getStock = async (
           `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${cleanSymbol}&apikey=X1AN6OR1Y3WI51E3`
         );
         const globalQuote = response.data["Global Quote"];
+        if (!globalQuote || !globalQuote["03. high"]) {
+          return res.status(404).json({
+            message: "Symbol not found",
+          });
+        }
         currentPrice = parseFloat(globalQuote["03. high"]);
         break;
       case ProvidersName.POLYGON:
         response = await httpService.get<PolygonResponse>(
           `https://api.polygon.io/v2/aggs/ticker/${cleanSymbol}/prev?apiKey=H3AbgxjKB67dVCpcMEuIG59HlFg6U3WZ`
         );
+        if (response.data.resultsCount === 0) {
+          return res.status(404).json({
+            message: "Symbol not found",
+          });
+        }
         currentPrice = response.data.results[0].h;
         break;
       default:
@@ -60,6 +71,11 @@ export const getStock = async (
     await dbConnection.insertLog(cleanSymbol, currentPrice, userId);
     return res.json({ cleanSymbol, currentPrice });
   } catch (error: any) {
+    if (error.code === "ECONNABORTED") {
+      return res
+        .status(error.code)
+        .json({ message: "External API request timed out" });
+    }
     return res.status(error.code).json({
       message: "Error fetching stock price",
       error: error.message,
@@ -96,7 +112,10 @@ export const getLogs = async (
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: Request,
+  res: Response
+): Promise<Response<any, Record<string, any>>> => {
   const { email, password } = req.body;
 
   try {
@@ -113,22 +132,25 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = generateToken(user.id);
-    res.json({ token });
+    return res.json({ token });
   } catch (error: any) {
-    res
+    return res
       .status(error.code)
       .json({ message: "Error logging in", error: error.message });
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (
+  req: Request,
+  res: Response
+): Promise<Response<any, Record<string, any>>> => {
   const { name, email, password } = req.body;
 
   try {
     await dbConnection.createUser(name, email, password);
-    res.status(201).json({ message: "User registered successfully" });
+    return res.status(201).json({ message: "User registered successfully" });
   } catch (error: any) {
-    res
+    return res
       .status(error.code)
       .json({ message: "Error registering user", error: error.message });
   }
