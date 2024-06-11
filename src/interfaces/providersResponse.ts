@@ -14,6 +14,7 @@ export interface AlphaVantageResponse {
 }
 
 export interface PolygonResponse {
+  resultsCount: number;
   results: Array<{
     c: number;
     h: number;

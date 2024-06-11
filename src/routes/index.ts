@@ -1,9 +1,12 @@
 import { Router } from "express";
-import { getLogs, getStock } from "../controllers";
+import { createUser, getLogs, getStock, login } from "../controllers";
+import { authenticate } from "../middleware/auth";
 
 const router: Router = Router();
 
-router.get("/stock", getStock);
-router.get("/logs", getLogs);
+router.get("/stock", authenticate, getStock);
+router.get("/logs", authenticate, getLogs);
+router.post("/login", login);
+router.post("/create-user", createUser);
 
 export default router;

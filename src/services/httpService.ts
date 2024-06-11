@@ -6,7 +6,7 @@ class HttpService {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: 'https://api.example.com',
-      timeout: 1000,
+      timeout: 10000,
     });
   }
 

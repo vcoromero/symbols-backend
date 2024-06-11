@@ -1,5 +1,6 @@
 import { createPool } from "mysql2/promise";
 import dotenv from "dotenv";
+import { hashPassword } from "../utils/manage-passwords";
 
 dotenv.config();
 
@@ -12,22 +13,36 @@ const pool = createPool({
 });
 
 class Database {
-  private pool: any;
+  private conn: any;
 
   constructor(pool: any) {
-    this.pool = pool;
+    this.conn = pool;
   }
 
-  async insertLog(symbol: string, currentPrice: number) {
-    const query = "INSERT INTO logs (symbol, current_price) VALUES (?, ?)";
-    const values = [symbol, currentPrice];
-    await this.pool.query(query, values);
+  async insertLog(symbol: string, currentPrice: number, user_id: number) {
+    const query =
+      "INSERT INTO logs (symbol, current_price, user_id) VALUES (?, ?, ?)";
+    const values = [symbol, currentPrice, user_id];
+    await this.conn.query(query, values);
   }
 
-  async getLogs(limit: number) {
-    const query = "SELECT * FROM logs ORDER BY created_at DESC LIMIT ?";
-    const [rows] = await this.pool.query(query, [limit]);
+  async getLogs(limit: number, user_id: number) {
+    const query =
+      "SELECT * FROM logs WHERE user_id = ? ORDER BY created_at DESC LIMIT ?";
+    const [rows] = await this.conn.query(query, [user_id, limit]);
     return rows;
+  }
+
+  async getUserByEmail(email: string) {
+    const query = "SELECT * FROM users WHERE email = ?";
+    const [rows] = await this.conn.query(query, [email]);
+    return rows;
+  }
+
+  async createUser(name: string, email: string, password: string) {
+    const hashedPassword = await hashPassword(password);
+    const query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+    await this.conn.query(query, [name, email, hashedPassword]);
   }
 }
 
