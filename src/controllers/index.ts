@@ -121,7 +121,7 @@ export const login = async (
   try {
     const [user] = await dbConnection.getUserByEmail(email);
 
-    if (user.length === 0) {
+    if (!user || user.length === 0) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
